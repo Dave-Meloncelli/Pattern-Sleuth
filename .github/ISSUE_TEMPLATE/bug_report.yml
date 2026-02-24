@@ -1,0 +1,50 @@
+name: Bug Report
+about: Report a bug in Pattern Sleuth
+title: '[BUG] '
+labels: bug
+assignees: ''
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+        
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened?
+      placeholder: "I ran `pattern-sleuth scan .` and..."
+    validations:
+      required: true
+      
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this?
+      placeholder: |
+        1. Run `pattern-sleuth scan ./my-project`
+        2. See error...
+    validations:
+      required: true
+      
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      
+  - type: input
+    id: version
+    attributes:
+      label: Pattern Sleuth Version
+      placeholder: "1.0.0"
+    validations:
+      required: true
+      
+  - type: input
+    id: python
+    attributes:
+      label: Python Version
+      placeholder: "3.12"

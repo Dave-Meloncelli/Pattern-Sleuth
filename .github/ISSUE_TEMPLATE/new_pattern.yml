@@ -1,0 +1,39 @@
+name: New Pattern
+about: Submit a new pattern for the registry
+title: '[PATTERN] '
+labels: pattern
+body:
+  - type: textarea
+    id: pattern
+    attributes:
+      label: Pattern Definition
+      description: Provide the pattern in JSON format
+      placeholder: |
+        {
+          "pattern_id": "my_pattern_id",
+          "title": "Pattern Title",
+          "category": "code_quality|security|ai_behavior",
+          "severity": "block|flag|warn|info",
+          "description": "What this detects",
+          "detection": {
+            "strategy": "regex",
+            "signals": ["pattern.*here"]
+          },
+          "message": "User-friendly message"
+        }
+    validations:
+      required: true
+      
+  - type: textarea
+    id: testcases
+    attributes:
+      label: Test Cases
+      description: Provide example code that should match/not match
+      placeholder: |
+        # Should match:
+        def foo():
+            return True  # placeholder
+        
+        # Should NOT match:
+        def foo():
+            return validate(data)

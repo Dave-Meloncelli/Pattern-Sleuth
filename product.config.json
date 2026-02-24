@@ -1,0 +1,60 @@
+{
+  "_comment": "Product configuration - single source of truth for all product metadata",
+  "_template_docs": "See federation/templates/PRODUCT_README_TEMPLATE.md for placeholder reference",
+  
+  "product": {
+    "name": "Pattern Sleuth",
+    "package_name": "pattern-sleuth",
+    "package_import": "pattern_sleuth",
+    "cli_command": "pattern-sleuth",
+    "tagline": "Anti-pattern detection engine for code, documentation, and AI-generated content.",
+    "description": "97 patterns for code quality, security, and AI behavior analysis. Zero dependencies, fully configurable, MIT licensed.",
+    "version": "1.0.0",
+    "value_proposition": "Traditional linters focus on syntax. Pattern Sleuth focuses on semantic patterns — placeholder code, security anti-patterns, and process violations that indicate deeper problems.",
+    "license": "MIT",
+    "license_badge": "MIT"
+  },
+  
+  "features": {
+    "count": 97,
+    "name": "patterns",
+    "summary": "Code quality, security, AI behavior, process patterns"
+  },
+  
+  "technical": {
+    "python_version": "3.10",
+    "main_class": "PatternSleuth",
+    "primary_method": "scan",
+    "primary_action": "scan",
+    "dependencies": "zero"
+  },
+  
+  "cli": {
+    "actions": [
+      {"name": "scan", "desc": "Scan files or directories for patterns"},
+      {"name": "list", "desc": "List available patterns"},
+      {"name": "validate", "desc": "Validate configuration"},
+      {"name": "discover", "desc": "Discover patterns in a codebase"},
+      {"name": "test", "desc": "Test patterns against test cases"}
+    ]
+  },
+  
+  "environment": [
+    {"var": "PATTERN_SLEUTH_ROOT", "desc": "Base directory for operations", "default": "Current working directory"},
+    {"var": "PATTERN_SLEUTH_REGISTRY_PATH", "desc": "Path to pattern registry JSON", "default": "Built-in registry"}
+  ],
+  
+  "contact": {
+    "support_email": "admin@rpgreliquary.com",
+    "github_username": "Dave-Meloncelli",
+    "repo_name": "pattern-sleuth"
+  },
+  
+  "urls": {
+    "homepage": "https://github.com/{{github_username}}/{{repo_name}}",
+    "documentation": "https://github.com/{{github_username}}/{{repo_name}}#readme",
+    "repository": "https://github.com/{{github_username}}/{{repo_name}}",
+    "issues": "https://github.com/{{github_username}}/{{repo_name}}/issues",
+    "pypi": "https://pypi.org/project/{{package_name}}/"
+  }
+}

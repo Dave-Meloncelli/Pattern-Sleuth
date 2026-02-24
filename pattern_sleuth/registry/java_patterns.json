@@ -1,0 +1,318 @@
+{
+  "registry_version": "1.1.0-java-2026-02-21",
+  "intent": "Java-specific anti-patterns focusing on AI-generated code issues and semantic problems.",
+  "entries": [
+    {
+      "pattern_id": "neg_java_empty_catch",
+      "title": "Empty catch block",
+      "polarity": "negative",
+      "category": "code_quality",
+      "severity": "flag",
+      "domain": "any",
+      "description": "Empty catch blocks swallow exceptions silently. At minimum, log the exception.",
+      "languages": [
+        "java"
+      ],
+      "file_globs": [
+        "**/*.java"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "catch\\s*\\([^)]+\\)\\s*\\{\\s*\\}"
+        ],
+        "false_positive_notes": "Rarely intentional for expected exceptions.",
+        "regex": [
+          "catch\\s*\\([^)]+\\)\\s*\\{\\s*\\}"
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_java_print_stack_trace",
+      "title": "printStackTrace() in production code",
+      "polarity": "negative",
+      "category": "code_quality",
+      "severity": "warn",
+      "domain": "any",
+      "description": "printStackTrace() writes to stderr without proper logging. Use a logger instead.",
+      "languages": [
+        "java"
+      ],
+      "file_globs": [
+        "**/*.java"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "\\.printStackTrace\\(\\)"
+        ],
+        "false_positive_notes": "Acceptable in quick scripts or test debugging.",
+        "regex": [
+          "\\.printStackTrace\\(\\)"
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_java_system_exit",
+      "title": "System.exit() in library code",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "flag",
+      "domain": "any",
+      "description": "System.exit() terminates the JVM. Should never be called in library code.",
+      "languages": [
+        "java"
+      ],
+      "file_globs": [
+        "**/*.java"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "System\\.exit\\("
+        ],
+        "false_positive_notes": "Valid in main() methods and CLI applications.",
+        "regex": [
+          "System\\.exit\\("
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_java_todo_comment",
+      "title": "TODO/FIXME comment",
+      "polarity": "negative",
+      "category": "code_quality",
+      "severity": "warn",
+      "domain": "any",
+      "description": "Unresolved TODO/FIXME indicates incomplete work.",
+      "languages": [
+        "java"
+      ],
+      "file_globs": [
+        "**/*.java"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "//\\s*TODO",
+          "//\\s*FIXME",
+          "/\\*\\s*TODO",
+          "/\\*\\s*FIXME"
+        ],
+        "false_positive_notes": "Sometimes used for legitimate tracking in active development.",
+        "regex": [
+          "//\\s*FIXME",
+          "/\\*\\s*TODO",
+          "/\\*\\s*FIXME",
+          "//\\s*TODO"
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "// TODO: implement this feature",
+          "// FIXME: implement this feature"
+        ],
+        "true_negatives": [
+          "# Completed: this is done",
+          "// Note: documented feature",
+          "def todo_list(): pass",
+          "function todoList() { return []; }"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_java_hardcoded_password",
+      "title": "Hardcoded password/secret",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "Hardcoded credentials in source code. Use environment variables or secret management.",
+      "languages": [
+        "java"
+      ],
+      "file_globs": [
+        "**/*.java"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "password\\s*=\\s*\"",
+          "secret\\s*=\\s*\"",
+          "api_key\\s*=\\s*\"",
+          "apikey\\s*=\\s*\""
+        ],
+        "false_positive_notes": "May be test fixtures or example code.",
+        "regex": [
+          "apikey\\s*=\\s*\"",
+          "password\\s*=\\s*\"",
+          "secret\\s*=\\s*\"",
+          "api_key\\s*=\\s*\""
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "String password = \"SuperSecret123!\";"
+        ],
+        "true_negatives": [
+          "password = os.environ.get(\"DB_PASSWORD\")",
+          "const password = process.env.DB_PASSWORD;",
+          "# Read about password security"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_java_sql_concatenation",
+      "title": "SQL string concatenation",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "String concatenation in SQL queries enables injection. Use PreparedStatement.",
+      "languages": [
+        "java"
+      ],
+      "file_globs": [
+        "**/*.java"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "\"\\s*\\+\\s*\\w+\\s*\\+\\s*\"",
+          "\"\\s*SELECT.*\\+\"",
+          "\"\\s*INSERT.*\\+\"",
+          "\"\\s*UPDATE.*\\+\"",
+          "\"\\s*DELETE.*\\+\""
+        ],
+        "false_positive_notes": "May be false positive for dynamic table names (still risky).",
+        "regex": [
+          "\\s*SELECT.*\\+",
+          "\\s*INSERT.*\\+",
+          "\\s*UPDATE.*\\+",
+          "\\s*DELETE.*\\+",
+          "\\s*\\+\\s*\\w+\\s*\\+\\s*"
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "String query = \"SELECT * FROM users WHERE id = \" + userId;"
+        ],
+        "true_negatives": [
+          "cursor.execute(\"SELECT * FROM users WHERE id = ?\", (user_id,))",
+          "const query = \"SELECT * FROM users WHERE id = $1\";",
+          "// This is a comment about SELECT statements"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_java_thread_sleep",
+      "title": "Thread.sleep() for synchronization",
+      "polarity": "negative",
+      "category": "code_quality",
+      "severity": "warn",
+      "domain": "any",
+      "description": "Using Thread.sleep() for synchronization is unreliable. Use proper synchronization primitives.",
+      "languages": [
+        "java"
+      ],
+      "file_globs": [
+        "**/*.java"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "Thread\\.sleep\\("
+        ],
+        "false_positive_notes": "Valid for rate limiting, backoff, or intentional delays.",
+        "regex": [
+          "Thread\\.sleep\\("
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_java_return_null_collection",
+      "title": "Returning null instead of empty collection",
+      "polarity": "negative",
+      "category": "code_quality",
+      "severity": "warn",
+      "domain": "any",
+      "description": "Returning null collections forces null checks. Return empty collections instead.",
+      "languages": [
+        "java"
+      ],
+      "file_globs": [
+        "**/*.java"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "return null;\\s*//.*empty",
+          "return null;\\s*//.*no.*result"
+        ],
+        "false_positive_notes": "Sometimes intentional to distinguish 'no result' from 'empty result'.",
+        "regex": [
+          "return null;\\s*//.*empty",
+          "return null;\\s*//.*no.*result"
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    }
+  ]
+}

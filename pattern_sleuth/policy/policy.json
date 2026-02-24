@@ -1,0 +1,86 @@
+{
+  "policy_version": "1.0.0",
+  "intent": "Default policy for Pattern Sleuth - controls severity thresholds and scanning behavior",
+  
+  "severity_mapping": {
+    "critical": "block",
+    "block": "block",
+    "high": "flag",
+    "flag": "flag",
+    "medium": "warn",
+    "warn": "warn",
+    "low": "info",
+    "info": "info"
+  },
+  
+  "decision_thresholds": {
+    "block": {
+      "min_findings": 1,
+      "severities": ["critical", "block"]
+    },
+    "flag": {
+      "min_findings": 1,
+      "severities": ["high", "flag"]
+    },
+    "warn": {
+      "min_findings": 1,
+      "severities": ["medium", "warn"]
+    }
+  },
+  
+  "file_extensions": [
+    ".py", ".pyw",
+    ".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs",
+    ".md", ".markdown", ".rst",
+    ".json", ".yaml", ".yml", ".toml",
+    ".sh", ".bash", ".zsh", ".ps1", ".bat",
+    ".cfg", ".ini", ".env.example",
+    ".dockerfile", "dockerfile",
+    ".sql",
+    ".html", ".css", ".scss", ".less"
+  ],
+  
+  "exclude_dirs": [
+    "__pycache__",
+    ".git",
+    ".hg",
+    ".svn",
+    "node_modules",
+    ".venv",
+    "venv",
+    "env",
+    ".env",
+    "dist",
+    "build",
+    "*.egg-info",
+    ".eggs",
+    ".tox",
+    ".mypy_cache",
+    ".pytest_cache",
+    "htmlcov",
+    ".coverage",
+    "*.egg"
+  ],
+  
+  "exclude_files": [
+    "*.min.js",
+    "*.min.css",
+    "*.pyc",
+    "*.pyo",
+    "*.so",
+    "*.dll",
+    "*.dylib",
+    "*.exe",
+    "*.bin",
+    "package-lock.json",
+    "yarn.lock",
+    "pnpm-lock.yaml",
+    "poetry.lock"
+  ],
+  
+  "max_file_size_bytes": 1048576,
+  
+  "max_findings_per_file": 100,
+  
+  "max_total_findings": 10000
+}

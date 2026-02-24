@@ -1,0 +1,298 @@
+{
+  "registry_version": "1.1.0-typescript-2026-02-21",
+  "intent": "TypeScript-specific anti-patterns that complement typescript-eslint. Focuses on semantic issues and AI-generated TypeScript patterns.",
+  "entries": [
+    {
+      "pattern_id": "neg_ts_any_type",
+      "title": "Use of `any` type",
+      "polarity": "negative",
+      "category": "code_quality",
+      "severity": "warn",
+      "domain": "any",
+      "description": "Using `any` disables TypeScript's type checking. Prefer `unknown` or specific types.",
+      "languages": [
+        "typescript"
+      ],
+      "file_globs": [
+        "**/*.{ts,tsx}"
+      ],
+      "sources": {
+        "external_intelligence": "typescript-eslint no-explicit-any"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          ": any[\\s,\\[\\]<>]",
+          ": any\\b"
+        ],
+        "false_positive_notes": "Sometimes needed for third-party library types or gradual migration.",
+        "regex": [
+          ": any\\b",
+          ": any[\\s,\\[\\]<>]"
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_ts_non_null_assertion",
+      "title": "Non-null assertion (!) on function calls",
+      "polarity": "negative",
+      "category": "code_quality",
+      "severity": "info",
+      "domain": "any",
+      "description": "Using `!` on function return values bypasses null checks. Consider null checks instead.",
+      "languages": [
+        "typescript"
+      ],
+      "file_globs": [
+        "**/*.{ts,tsx}"
+      ],
+      "sources": {
+        "external_intelligence": "typescript-eslint no-non-null-assertion"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "\\)!\\s*\\.",
+          "\\)!\\s*\\["
+        ],
+        "false_positive_notes": "Non-null assertions are idiomatic TypeScript. This pattern only flags risky usages on function calls.",
+        "regex": [
+          "\\)!\\s*\\.",
+          "\\)!\\s*\\["
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_ts_explicit_any_cast",
+      "title": "Explicit cast to any",
+      "polarity": "negative",
+      "category": "code_quality",
+      "severity": "flag",
+      "domain": "any",
+      "description": "Casting to `any` bypasses all type safety. Use type assertions to specific types.",
+      "languages": [
+        "typescript"
+      ],
+      "file_globs": [
+        "**/*.{ts,tsx}"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "as any",
+          "<any>"
+        ],
+        "false_positive_notes": "Sometimes needed for third-party library interop."
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_ts_ts_ignore_comment",
+      "title": "@ts-ignore comment",
+      "polarity": "negative",
+      "category": "code_quality",
+      "severity": "warn",
+      "domain": "any",
+      "description": "@ts-ignore suppresses TypeScript errors. Use @ts-expect-error with explanation instead.",
+      "languages": [
+        "typescript"
+      ],
+      "file_globs": [
+        "**/*.{ts,tsx}"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "@ts-ignore"
+        ],
+        "false_positive_notes": "Sometimes needed for JavaScript dependencies without types."
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_ts_unsafe_type_assertion",
+      "title": "Unsafe type assertion",
+      "polarity": "negative",
+      "category": "code_quality",
+      "severity": "info",
+      "domain": "any",
+      "description": "Type assertions that narrow types bypass type safety. Use type guards instead.",
+      "languages": [
+        "typescript"
+      ],
+      "file_globs": [
+        "**/*.{ts,tsx}"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "as any\\[\\]",
+          "as unknown"
+        ],
+        "false_positive_notes": "Most type assertions are intentional. Only flag risky ones like 'as any[]' or 'as unknown'.",
+        "regex": [
+          "as any\\[\\]"
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_ts_empty_interface",
+      "title": "Empty interface",
+      "polarity": "negative",
+      "category": "code_quality",
+      "severity": "warn",
+      "domain": "any",
+      "description": "Empty interfaces provide no type safety. Use `Record<string, never>` or a type alias.",
+      "languages": [
+        "typescript"
+      ],
+      "file_globs": [
+        "**/*.{ts,tsx}"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "interface \\w+ \\{\\s*\\}"
+        ],
+        "false_positive_notes": "May be intentional for extension points.",
+        "regex": [
+          "interface \\w+ \\{\\s*\\}"
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_ts_namespace_usage",
+      "title": "Namespace usage (prefer modules)",
+      "polarity": "negative",
+      "category": "standards",
+      "severity": "warn",
+      "domain": "any",
+      "description": "Namespaces are legacy TypeScript. Use ES6 modules (import/export) instead.",
+      "languages": [
+        "typescript"
+      ],
+      "file_globs": [
+        "**/*.{ts,tsx}"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "^namespace \\w+"
+        ],
+        "false_positive_notes": "Still needed for ambient declarations and .d.ts files.",
+        "regex": [
+          "^namespace \\w+"
+        ]
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "neg_ts_promise_any",
+      "title": "Promise<any> type",
+      "polarity": "negative",
+      "category": "code_quality",
+      "severity": "flag",
+      "domain": "any",
+      "description": "Promise<any> loses type information. Use Promise<T> with specific type.",
+      "languages": [
+        "typescript"
+      ],
+      "file_globs": [
+        "**/*.{ts,tsx}"
+      ],
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "Promise<any>",
+          "Promise< any >"
+        ],
+        "false_positive_notes": "Sometimes unavoidable for dynamic APIs."
+      },
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    }
+  ]
+}

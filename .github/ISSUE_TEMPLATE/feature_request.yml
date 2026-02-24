@@ -1,0 +1,29 @@
+name: Feature Request
+about: Request a new feature or pattern
+title: '[FEATURE] '
+labels: enhancement
+body:
+  - type: textarea
+    id: feature
+    attributes:
+      label: Feature Description
+      description: What would you like Pattern Sleuth to do?
+    validations:
+      required: true
+      
+  - type: textarea
+    id: usecase
+    attributes:
+      label: Use Case
+      description: Why do you need this? What problem does it solve?
+      
+  - type: dropdown
+    id: type
+    attributes:
+      label: Feature Type
+      options:
+        - New pattern detection
+        - New CLI command
+        - Performance improvement
+        - Documentation
+        - Other

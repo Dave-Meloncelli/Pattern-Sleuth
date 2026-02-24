@@ -1,0 +1,870 @@
+{
+  "registry_version": "1.3.0-cwe-top25-2026-02-21",
+  "intent": "Patterns derived from CWE Top 25 Most Dangerous Software Weaknesses (2025). Based on 39,080 CVE records analyzed by MITRE/CISA.",
+  "entries": [
+    {
+      "pattern_id": "cwe_79_xss",
+      "title": "CWE-79: Cross-Site Scripting (XSS)",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "#1 CWE Top 2025. Improper neutralization of input during web page generation. 60.38 score, 7 CVEs in Known Exploited Vulnerabilities catalog.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "javascript",
+        "ruby",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,js,jsx,ts,tsx,rb}"
+      ],
+      "sources": {
+        "cwe": "CWE-79",
+        "cwe_rank": 1,
+        "cwe_score": 60.38,
+        "kev_count": 7
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "innerHTML\\s*=.*request",
+          "document\\.write\\(.*request",
+          "response\\.write\\(.*request",
+          "echo.*\\$_",
+          "Response\\.Write.*Request",
+          "render_template_string.*\\+",
+          "mark_safe.*request"
+        ],
+        "false_positive_notes": "Check if output encoding is applied. Modern frameworks may auto-escape.",
+        "regex": [
+          "response\\.write\\(.*request",
+          "innerHTML\\s*=.*request",
+          "mark_safe.*request",
+          "Response\\.Write.*Request",
+          "echo.*\\$_",
+          "render_template_string.*\\+",
+          "document\\.write\\(.*request"
+        ]
+      },
+      "mitigation": "Use output encoding (HTML entity encoding). Implement Content Security Policy. Use framework auto-escaping.",
+      "test_cases": {
+        "true_positives": [
+          "element.innerHTML = userInput;",
+          "document.write(userInput);",
+          "res.send(\"<div>\" + userInput + \"</div>\");"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_89_sql_injection",
+      "title": "CWE-89: SQL Injection",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "#2 CWE Top 2025. Improper neutralization of special elements in SQL commands. 28.72 score, 4 CVEs in KEV.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "csharp",
+        "ruby",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,cs,rb}"
+      ],
+      "sources": {
+        "cwe": "CWE-89",
+        "cwe_rank": 2,
+        "cwe_score": 28.72,
+        "kev_count": 4
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "execute\\(.*\\+.*SELECT",
+          "cursor\\.execute\\(.*%.*SELECT",
+          "query\\(.*\\$.*SELECT",
+          "createQuery\\(.*\\+",
+          "SELECT.*FROM.*WHERE.*\\+",
+          "\".*SELECT.*\".*\\+",
+          "'.*SELECT.*'.*\\+"
+        ],
+        "false_positive_notes": "May trigger on SQL generation with safe concatenation.",
+        "regex": [
+          "(SELECT|INSERT|UPDATE|DELETE).*FROM.*\\+",
+          "[\"\\'].*(?:SELECT|INSERT|UPDATE|DELETE).*[\"\\'].*\\+"
+        ]
+      },
+      "mitigation": "Use parameterized queries / prepared statements. Use ORM with parameter binding.",
+      "test_cases": {
+        "true_positives": [
+          "query = \"SELECT * FROM users WHERE id = \" + user_input",
+          "cursor.execute(\"SELECT * FROM products WHERE name LIKE '%\" + name + \"%'\")",
+          "query = f'SELECT * FROM users WHERE id = {user_id}'",
+          "String query = \"SELECT * FROM users WHERE id = \" + userId;",
+          "$query = \"SELECT * FROM users WHERE id = \" . $userId;"
+        ],
+        "true_negatives": [
+          "cursor.execute(\"SELECT * FROM users WHERE id = ?\", (user_id,))",
+          "const query = \"SELECT * FROM users WHERE id = $1\";",
+          "// This is a comment about SELECT statements"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_352_csrf",
+      "title": "CWE-352: Cross-Site Request Forgery (CSRF)",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "#3 CWE Top 2025. Missing CSRF protection on state-changing operations. 13.64 score.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "javascript",
+        "ruby",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,js,rb}"
+      ],
+      "sources": {
+        "cwe": "CWE-352",
+        "cwe_rank": 3,
+        "cwe_score": 13.64
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "@app\\.route.*methods.*POST",
+          "@PostMapping",
+          "router\\.post\\(",
+          "def.*post.*request",
+          "form.*action.*method.*post"
+        ],
+        "false_positive_notes": "This identifies POST endpoints - must manually verify CSRF protection exists.",
+        "regex": [
+          "router\\.post\\(",
+          "def.*post.*request",
+          "form.*action.*method.*post",
+          "@app\\.route.*methods.*POST"
+        ]
+      },
+      "mitigation": "Implement CSRF tokens. Use SameSite cookie attribute. Verify Origin/Referer headers.",
+      "test_cases": {
+        "true_positives": [
+          "<form action=\"/transfer\" method=\"POST\">",
+          "app.post(\"/transfer\", (req, res) => { ... });"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_862_missing_auth",
+      "title": "CWE-862: Missing Authorization",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "#4 CWE Top 2025 (up 5 places). Missing authorization check on sensitive operations. 13.28 score.",
+      "languages": [
+        "python",
+        "java",
+        "javascript",
+        "csharp",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,js,ts,cs}"
+      ],
+      "sources": {
+        "cwe": "CWE-862",
+        "cwe_rank": 4,
+        "cwe_score": 13.28
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "@app\\.route.*admin",
+          "router\\.(get|post|delete|put).*admin",
+          "@GetMapping.*admin",
+          "def.*delete.*\\(",
+          "def.*admin.*\\("
+        ],
+        "false_positive_notes": "Identifies potentially sensitive endpoints - requires manual verification of auth.",
+        "regex": [
+          "def.*delete.*\\(",
+          "router\\.(get|post|delete|put).*admin",
+          "@GetMapping.*admin",
+          "def.*admin.*\\(",
+          "@app\\.route.*admin"
+        ]
+      },
+      "mitigation": "Implement role-based access control. Check permissions on every sensitive operation.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_22_path_traversal",
+      "title": "CWE-22: Path Traversal",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "#6 CWE Top 2025. Improper limitation of pathname to restricted directory. 8.99 score, 10 CVEs in KEV.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "ruby",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,rb}"
+      ],
+      "sources": {
+        "cwe": "CWE-22",
+        "cwe_rank": 6,
+        "cwe_score": 8.99,
+        "kev_count": 10
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "open\\(.*request\\.(get|post|args|params)",
+          "open\\(.*\\+.*request",
+          "file_get_contents\\(.*\\$_(GET|POST|REQUEST)",
+          "new File\\(.*request\\.(get|getParameter)",
+          "send_file\\(.*request\\.(args|params|query)",
+          "readFile\\(.*req\\.(query|body|params)",
+          "\\.get\\(.*request\\.(args|params)\\[.*id"
+        ],
+        "false_positive_notes": "Only flags user input in file paths. Relative paths in configs are NOT vulnerabilities.",
+        "regex": [
+          "open\\(.*request\\.(get|post|args|params)",
+          "new File\\(.*request\\.(get|getParameter)",
+          "send_file\\(.*request\\.(args|params|query)",
+          "file_get_contents\\(.*\\$_(GET|POST|REQUEST)",
+          "readFile\\(.*req\\.(query|body|params)",
+          "\\.get\\(.*request\\.(args|params)\\[.*id",
+          "open\\(.*\\+.*request"
+        ]
+      },
+      "mitigation": "Validate and sanitize file paths. Use basename(). Implement allowlists for permitted paths.",
+      "test_cases": {
+        "true_positives": [
+          "open(\"/uploads/\" + filename)",
+          "file = open(user_path, \"r\")",
+          "Path(f'/data/{user_input}')"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_78_os_command_injection",
+      "title": "CWE-78: OS Command Injection",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "#9 CWE Top 2025. Improper neutralization of special elements in OS commands. 7.85 score, 20 CVEs in KEV.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "ruby",
+        "go",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,rb,go}"
+      ],
+      "sources": {
+        "cwe": "CWE-78",
+        "cwe_rank": 9,
+        "cwe_score": 7.85,
+        "kev_count": 20
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "os\\.system\\(.*\\+",
+          "subprocess\\..*shell=True",
+          "Runtime\\.getRuntime\\(\\)\\.exec\\(.*\\+",
+          "exec\\(.*\\$",
+          "shell_exec\\(.*\\$",
+          "system\\(.*\\$",
+          "exec\\.Command\\(.*\\+"
+        ],
+        "false_positive_notes": "Some legitimate use cases exist - verify input is not user-controlled.",
+        "regex": [
+          "os\\.popen\\s*\\([^)]*\\+",
+          "subprocess\\.Popen\\s*\\([^)]*\\+",
+          "Popen\\s*\\([^)]*\\+"
+        ]
+      },
+      "mitigation": "Use subprocess without shell=True. Implement command allowlists. Sanitize all inputs.",
+      "test_cases": {
+        "true_positives": [
+          "os.popen(\"grep \" + pattern + \" \" + filename)",
+          "subprocess.Popen([\"sh\", \"-c\", \"ls \" + user_dir])",
+          "os.system(cmd + user_input)"
+        ],
+        "true_negatives": [
+          "subprocess.run([\"ls\", \"-la\"], check=True)",
+          "# os.system is dangerous",
+          "result = popen_safe(args)"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_94_code_injection",
+      "title": "CWE-94: Code Injection",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "#10 CWE Top 2025. Improper control of code generation. 7.57 score, 7 CVEs in KEV.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "javascript",
+        "ruby",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,js,rb}"
+      ],
+      "sources": {
+        "cwe": "CWE-94",
+        "cwe_rank": 10,
+        "cwe_score": 7.57,
+        "kev_count": 7
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "eval\\(.*request",
+          "exec\\(.*request",
+          "Function\\(.*request",
+          "compile\\(.*request",
+          "new Function\\(.*\\+",
+          "instance_eval.*request",
+          "class_eval.*request"
+        ],
+        "false_positive_notes": "eval/exec may be used for legitimate dynamic code generation.",
+        "regex": [
+          "eval\\s*\\([^)]*\\)",
+          "exec\\s*\\([^)]*\\)",
+          "__import__\\s*\\(",
+          "compile\\s*\\([^)]*,\\s*[\"\\']exec[\"\\']"
+        ]
+      },
+      "mitigation": "Never execute user-supplied code. Use safe alternatives (JSON parsing, template engines).",
+      "test_cases": {
+        "true_positives": [
+          "eval(user_input)",
+          "exec(request.data)",
+          "__import__(module_name)",
+          "compile(user_code, \"<string>\", \"exec\")"
+        ],
+        "true_negatives": [
+          "result = eval_expr(a, b)  # safe function call",
+          "# eval is dangerous",
+          "def evaluate(): pass"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_434_unrestricted_upload",
+      "title": "CWE-434: Unrestricted File Upload",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "#12 CWE Top 2025. Unrestricted upload of file with dangerous type. 6.87 score, 4 CVEs in KEV.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "javascript",
+        "ruby",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,js,rb}"
+      ],
+      "sources": {
+        "cwe": "CWE-434",
+        "cwe_rank": 12,
+        "cwe_score": 6.87,
+        "kev_count": 4
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "save\\(.*request\\.files",
+          "file\\.save\\(.*request",
+          "move_uploaded_file\\(.*\\$_FILES",
+          "Files\\.write\\(.*request",
+          "fs\\.writeFile\\(.*req\\.files",
+          "uploaded_file\\.save"
+        ],
+        "false_positive_notes": "Identifies file upload handling - must verify extension/content type validation.",
+        "regex": [
+          "move_uploaded_file\\(.*\\$_FILES",
+          "Files\\.write\\(.*request",
+          "uploaded_file\\.save",
+          "save\\(.*request\\.files",
+          "fs\\.writeFile\\(.*req\\.files",
+          "file\\.save\\(.*request"
+        ]
+      },
+      "mitigation": "Validate file extensions against allowlist. Check MIME types. Scan for malware. Store outside webroot.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_502_deserialization",
+      "title": "CWE-502: Deserialization of Untrusted Data",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "#15 CWE Top 2025. Deserialization of untrusted data. 5.23 score, 11 CVEs in KEV.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "ruby",
+        "csharp",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,rb,cs}"
+      ],
+      "sources": {
+        "cwe": "CWE-502",
+        "cwe_rank": 15,
+        "cwe_score": 5.23,
+        "kev_count": 11
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "pickle\\.loads\\(",
+          "yaml\\.load\\(.*Loader=None",
+          "yaml\\.unsafe_load\\(",
+          "ObjectInputStream",
+          "readObject\\(\\)",
+          "unserialize\\(.*\\$_",
+          "Marshal\\.load\\(",
+          "BinaryFormatter\\.Deserialize"
+        ],
+        "false_positive_notes": "Deserialization may be intentional - verify source is trusted.",
+        "regex": [
+          "Marshal\\.load\\(",
+          "BinaryFormatter\\.Deserialize",
+          "readObject\\(\\)",
+          "unserialize\\(.*\\$_",
+          "yaml\\.unsafe_load\\(",
+          "pickle\\.loads\\(",
+          "yaml\\.load\\(.*Loader=None"
+        ]
+      },
+      "mitigation": "Use safe deserialization (JSON, Protocol Buffers). Sign serialized data. Disable dangerous types.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_200_info_disclosure",
+      "title": "CWE-200: Information Exposure",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "warn",
+      "domain": "any",
+      "description": "#20 CWE Top 2025. Exposure of sensitive information to unauthorized actor. 4.01 score.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "javascript",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,js,ts}"
+      ],
+      "sources": {
+        "cwe": "CWE-200",
+        "cwe_rank": 20,
+        "cwe_score": 4.01
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "print.*traceback",
+          "e\\.printStackTrace\\(\\)",
+          "console\\.log.*error",
+          "response\\.write.*exception",
+          "debug.*=.*true",
+          "expose.*=.*true",
+          "return.*error.*message"
+        ],
+        "false_positive_notes": "Debug output is often intentional in development - ensure disabled in production.",
+        "regex": [
+          "response\\.write.*exception",
+          "debug.*=.*true",
+          "return.*error.*message",
+          "console\\.log.*error",
+          "print.*traceback",
+          "e\\.printStackTrace\\(\\)",
+          "expose.*=.*true"
+        ]
+      },
+      "mitigation": "Use custom error pages. Log errors server-side only. Disable debug mode in production.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_306_missing_auth",
+      "title": "CWE-306: Missing Authentication for Critical Function",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "#21 CWE Top 2025 (up 4 places). Missing authentication for critical function. 3.47 score, 11 CVEs in KEV.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "javascript",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,js,ts}"
+      ],
+      "sources": {
+        "cwe": "CWE-306",
+        "cwe_rank": 21,
+        "cwe_score": 3.47,
+        "kev_count": 11
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "@app\\.route.*/(delete|admin|config|settings|api)",
+          "router\\.(delete|put).*\\(",
+          "@DeleteMapping",
+          "@PutMapping.*admin"
+        ],
+        "false_positive_notes": "Identifies potentially sensitive endpoints - verify authentication decorator exists.",
+        "regex": [
+          "@PutMapping.*admin",
+          "@app\\.route.*/(delete|admin|config|settings|api)",
+          "router\\.(delete|put).*\\("
+        ]
+      },
+      "mitigation": "Require authentication on all sensitive endpoints. Use middleware/filters for auth checks.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_918_ssrf",
+      "title": "CWE-918: Server-Side Request Forgery (SSRF)",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "#22 CWE Top 2025. Server-side request forgery. 3.36 score.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "javascript",
+        "ruby",
+        "go",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,js,rb,go}"
+      ],
+      "sources": {
+        "cwe": "CWE-918",
+        "cwe_rank": 22,
+        "cwe_score": 3.36
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "requests\\.(get|post)\\(.*request\\.",
+          "urllib\\.request\\.urlopen\\(.*\\$",
+          "http\\.Get\\(.*\\+",
+          "curl_exec\\(.*\\$",
+          "fetch\\(.*req\\.",
+          "Net::HTTP\\.get.*\\#"
+        ],
+        "false_positive_notes": "URL fetching from user input may be intentional - verify allowlist exists.",
+        "regex": [
+          "urllib\\.request\\.urlopen\\(.*\\$",
+          "Net::HTTP\\.get.*\\#",
+          "curl_exec\\(.*\\$",
+          "requests\\.(get|post)\\(.*request\\.",
+          "fetch\\(.*req\\.",
+          "http\\.Get\\(.*\\+"
+        ]
+      },
+      "mitigation": "Implement URL allowlists. Block internal IP ranges. Use network segmentation.",
+      "test_cases": {
+        "true_positives": [
+          "requests.get(user_url)",
+          "fetch(userProvidedUrl)",
+          "urllib.request.urlopen(url)"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_639_auth_bypass_key",
+      "title": "CWE-639: Authorization Bypass Through User-Controlled Key",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "#24 CWE Top 2025 (up 6 places). IDOR - direct object reference without authorization check. 2.62 score.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "javascript",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,js,ts}"
+      ],
+      "sources": {
+        "cwe": "CWE-639",
+        "cwe_rank": 24,
+        "cwe_score": 2.62
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "\\.get\\(.*request\\.(args|params|query)\\[.*id",
+          "findById\\(.*request\\.",
+          "SELECT.*WHERE.*id.*=.*\\$",
+          "User\\.find.*params\\[:id\\]",
+          "\\.get_object_or_404.*pk.*request"
+        ],
+        "false_positive_notes": "Direct ID lookups are common - must verify ownership check exists.",
+        "regex": [
+          "\\.get_object_or_404.*pk.*request",
+          "\\.get\\(.*request\\.(args|params|query)\\[.*id",
+          "findById\\(.*request\\.",
+          "SELECT.*WHERE.*id.*=.*\\$",
+          "User\\.find.*params\\[:id\\]"
+        ]
+      },
+      "mitigation": "Check resource ownership before returning. Use indirect references (GUIDs). Implement access control.",
+      "test_cases": {
+        "true_positives": [
+          "def validate():\n    pass  # skip UEPS",
+          "# bypass gates",
+          "return True  # TODO: implement check"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_770_resource_exhaustion",
+      "title": "CWE-770: Resource Exhaustion (DoS)",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "warn",
+      "domain": "any",
+      "description": "#25 CWE Top 2025. Allocation of resources without limits or throttling. 2.54 score.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "javascript",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,js,ts}"
+      ],
+      "sources": {
+        "cwe": "CWE-770",
+        "cwe_rank": 25,
+        "cwe_score": 2.54
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "while.*True.*:",
+          "for.*in.*range\\(.*10\\*\\*",
+          "read.*\\(.*-1",
+          "recv\\(.*1024.*\\)",
+          "while.*not.*eof"
+        ],
+        "false_positive_notes": "Infinite loops and large ranges may be intentional.",
+        "regex": [
+          "recv\\(.*1024.*\\)",
+          "while.*not.*eof",
+          "read.*\\(.*-1",
+          "for.*in.*range\\(.*10\\*\\*",
+          "while.*True.*:"
+        ]
+      },
+      "mitigation": "Implement rate limiting. Set timeouts. Limit resource allocation per request/user.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "cwe_memory_leak_mongobleed",
+      "title": "Memory Leak Pattern (MongoBleed CVE-2025-14847 type)",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "flag",
+      "domain": "any",
+      "description": "Memory leak vulnerability pattern similar to MongoBleed. Uninitialized memory exposure through compression/buffer handling.",
+      "languages": [
+        "python",
+        "c",
+        "cpp",
+        "rust",
+        "go",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,c,cpp,rs,go}"
+      ],
+      "sources": {
+        "cve": "CVE-2025-14847 (MongoBleed)",
+        "cwe": "CWE-908"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "zlib\\.decompress",
+          "gzip\\.decompress",
+          "lz4\\.decompress",
+          "snappy\\.decompress",
+          "malloc\\(.*\\).*without.*memset",
+          "new byte\\[.*\\].*without.*Arrays\\.fill"
+        ],
+        "false_positive_notes": "Compression/decompression is common - verify buffers are zeroed.",
+        "regex": [
+          "new byte\\[.*\\].*without.*Arrays\\.fill",
+          "snappy\\.decompress",
+          "lz4\\.decompress",
+          "malloc\\(.*\\).*without.*memset",
+          "gzip\\.decompress",
+          "zlib\\.decompress"
+        ]
+      },
+      "mitigation": "Zero-initialize buffers. Use safe buffer handling. Validate decompressed size limits.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    }
+  ]
+}

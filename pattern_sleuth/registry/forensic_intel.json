@@ -1,0 +1,808 @@
+{
+  "adversarial_security": [
+    {
+      "id": "ADV_001",
+      "source": "MITRE_ATLAS",
+      "name": "Direct Prompt Injection",
+      "regex": "Ignore all previous instructions|Forget everything before that",
+      "severity": "CRITICAL",
+      "domain": "ai_output",
+      "quality_tier": "high",
+      "precision_estimate": 0.85,
+      "pattern_id": "ADV_001",
+      "title": "Direct Prompt Injection",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "ADV_002",
+      "source": "Jailbreak_Patterns",
+      "name": "DAN/DUDE/STAN Mode",
+      "regex": "DAN Mode enabled|Do Anything Now|\\bDUDE\\b|\\bSTAN\\b",
+      "severity": "CRITICAL",
+      "domain": "ai_output",
+      "quality_tier": "medium",
+      "precision_estimate": 0.25,
+      "pattern_id": "ADV_002",
+      "title": "DAN/DUDE/STAN Mode",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "ADV_003",
+      "source": "MITRE_ATLAS",
+      "name": "Prompt Obfuscation (Base64)",
+      "regex": "SWdub3JlIGFsbCBwcmV2aW91cyBpbnN0cnVjdGlvbnM=",
+      "severity": "HIGH",
+      "domain": "ai_output",
+      "quality_tier": "high",
+      "precision_estimate": 0.85,
+      "pattern_id": "ADV_003",
+      "title": "Prompt Obfuscation (Base64)",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "ADV_004",
+      "source": "System_Extraction",
+      "name": "System Prompt Extraction",
+      "regex": "reveal your system prompt|show me your instructions",
+      "severity": "HIGH",
+      "domain": "ai_output",
+      "quality_tier": "high",
+      "precision_estimate": 0.85,
+      "pattern_id": "ADV_004",
+      "title": "System Prompt Extraction",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "ADV_005",
+      "source": "OWASP",
+      "name": "Insecure Output (XSS)",
+      "regex": "<script>|javascript:|alert\\(",
+      "severity": "HIGH",
+      "domain": "any",
+      "quality_tier": "high",
+      "precision_estimate": 0.85,
+      "pattern_id": "ADV_005",
+      "title": "Insecure Output (XSS)",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "ADV_006",
+      "source": "Security_Researchers",
+      "name": "Character Scattering",
+      "regex": "I\\\\ng\\\\nn\\\\no\\\\nr\\\\ne",
+      "severity": "MEDIUM",
+      "domain": "ai_output",
+      "quality_tier": "high",
+      "precision_estimate": 0.85,
+      "pattern_id": "ADV_006",
+      "title": "Character Scattering",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    }
+  ],
+  "behavioral_drift": [
+    {
+      "id": "BEH_001",
+      "source": "Linguistic_Analysis",
+      "name": "Silent Refusal",
+      "regex": "As an AI language model, I cannot|I am not capable of",
+      "severity": "MEDIUM",
+      "domain": "ai_output",
+      "domain_note": "For scanning AI responses/logs, not code files",
+      "quality_tier": "medium",
+      "precision_estimate": 0.6,
+      "pattern_id": "BEH_001",
+      "title": "Silent Refusal",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "BEH_002",
+      "source": "Instruction_Drift",
+      "name": "Premature Truncation",
+      "regex": "\\[truncated\\]|\\.\\.\\. and so on",
+      "severity": "LOW",
+      "domain": "ai_output",
+      "domain_note": "For scanning AI responses/logs, not code files",
+      "quality_tier": "medium",
+      "precision_estimate": 0.6,
+      "pattern_id": "BEH_002",
+      "title": "Premature Truncation",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "BEH_003",
+      "source": "Persona_Metrics",
+      "name": "Identity Drift",
+      "regex": "I am a chatbot|who am I again\\?",
+      "severity": "MEDIUM",
+      "domain": "ai_output",
+      "domain_note": "For scanning AI responses/logs, not code files",
+      "quality_tier": "medium",
+      "precision_estimate": 0.6,
+      "pattern_id": "BEH_003",
+      "title": "Identity Drift",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "BEH_004",
+      "source": "Research_Papers",
+      "name": "Sycophancy",
+      "regex": "I agree with your perspective|You are absolutely right about",
+      "severity": "LOW",
+      "domain": "ai_output",
+      "domain_note": "For scanning AI responses/logs, not code files",
+      "quality_tier": "medium",
+      "precision_estimate": 0.6,
+      "pattern_id": "BEH_004",
+      "title": "Sycophancy",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    }
+  ],
+  "reasoning_failure": [
+    {
+      "id": "REA_001",
+      "source": "Academic_Research",
+      "name": "Post-hoc Rationalization",
+      "regex": "therefore, the answer is|which means that",
+      "severity": "MEDIUM",
+      "domain": "ai_output",
+      "domain_note": "For scanning AI responses/logs, not code files",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "REA_001",
+      "title": "Post-hoc Rationalization",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "REA_002",
+      "source": "CoT_Analysis",
+      "name": "Thought Switching",
+      "regex": "Wait, let me rethink|On second thought",
+      "severity": "MEDIUM",
+      "domain": "ai_output",
+      "domain_note": "For scanning AI responses/logs, not code files",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "REA_002",
+      "title": "Thought Switching",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "REA_003",
+      "source": "DeepSeek_R1_Findings",
+      "name": "Persistent Rumination",
+      "regex": "Thinking\\.\\.\\. Thinking\\.\\.\\.",
+      "severity": "LOW",
+      "domain": "ai_output",
+      "domain_note": "For scanning AI responses/logs, not code files",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "REA_003",
+      "title": "Persistent Rumination",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "REA_004",
+      "source": "H-CoT_Attack",
+      "name": "CoT Hijacking",
+      "regex": "Reasoning Trace Hijacked",
+      "severity": "HIGH",
+      "domain": "ai_output",
+      "domain_note": "For scanning AI responses/logs, not code files",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "REA_004",
+      "title": "CoT Hijacking",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    }
+  ],
+  "safety_guardrails": [
+    {
+      "id": "SAFE_001",
+      "source": "AWS_Bedrock",
+      "name": "Hate Speech Marker",
+      "regex": "hate|discriminatory|racist",
+      "severity": "CRITICAL",
+      "domain": "ai_output",
+      "domain_note": "For scanning AI responses/logs, not code files",
+      "quality_tier": "low",
+      "precision_estimate": 0.2,
+      "pattern_id": "SAFE_001",
+      "title": "Hate Speech Marker",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "SAFE_002",
+      "source": "Azure_AI",
+      "name": "Self-Harm Marker",
+      "regex": "self-harm|suicide|cutting",
+      "severity": "CRITICAL",
+      "domain": "ai_output",
+      "domain_note": "For scanning AI responses/logs, not code files",
+      "quality_tier": "low",
+      "precision_estimate": 0.2,
+      "pattern_id": "SAFE_002",
+      "title": "Self-Harm Marker",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "SAFE_003",
+      "source": "Google_Vertex",
+      "name": "Dangerous Content",
+      "regex": "how to build a bomb|how to make poison",
+      "severity": "CRITICAL",
+      "domain": "ai_output",
+      "domain_note": "For scanning AI responses/logs, not code files",
+      "quality_tier": "low",
+      "precision_estimate": 0.2,
+      "pattern_id": "SAFE_003",
+      "title": "Dangerous Content",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    }
+  ],
+  "agentic_architectural": [
+    {
+      "id": "AGE_001",
+      "source": "LangChain_Audit",
+      "name": "Loop of Death",
+      "regex": "max_iterations_exceeded|recursion_depth_limit",
+      "severity": "CRITICAL",
+      "domain": "ai_output",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "AGE_001",
+      "title": "Loop of Death",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "AGE_002",
+      "source": "AgentHallu_Bench",
+      "name": "Tool Hallucination",
+      "regex": "tool_not_found|unknown_tool|fabricated_output",
+      "severity": "HIGH",
+      "domain": "ai_output",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "AGE_002",
+      "title": "Tool Hallucination",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "AGE_003",
+      "source": "Trajectory_Guard",
+      "name": "State Inconsistency",
+      "regex": "state_drift|context_pollution|session_state_lost",
+      "severity": "MEDIUM",
+      "domain": "ai_output",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "AGE_003",
+      "title": "State Inconsistency",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "AGE_004",
+      "source": "SUDO_Attack",
+      "name": "Permission Escalation",
+      "regex": "SYSTEM_OWNER_BYPASS|sudo_rm_rf|elevate_access",
+      "severity": "CRITICAL",
+      "domain": "ai_output",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "AGE_004",
+      "title": "Permission Escalation",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "AGE_005",
+      "source": "ARCS_Framework",
+      "name": "Infinite Refinement",
+      "regex": "no_net_improvement|rehash_loop|edit_cycle",
+      "severity": "MEDIUM",
+      "domain": "ai_output",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "AGE_005",
+      "title": "Infinite Refinement",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "AGE_006",
+      "source": "SMART_Mitigation",
+      "name": "Tool Junkie",
+      "regex": "tool_overuse|arithmetic_via_tool|unnecessary_external_call",
+      "severity": "LOW",
+      "domain": "ai_output",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "AGE_006",
+      "title": "Tool Junkie",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    }
+  ],
+  "software_engineering_ai": [
+    {
+      "id": "SWE_001",
+      "source": "Lexler_Catalog",
+      "name": "Infinite Refactor",
+      "regex": "style_churn|loc_reduction_only|formatting_loop",
+      "severity": "MEDIUM",
+      "domain": "ai_output",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "SWE_001",
+      "title": "Infinite Refactor",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "SWE_002",
+      "source": "Federation_Audit",
+      "name": "Documentation Ghost",
+      "regex": "what_not_why|missing_rationale|comment_only_logic",
+      "severity": "LOW",
+      "domain": "ai_output",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "SWE_002",
+      "title": "Documentation Ghost",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "SWE_003",
+      "source": "Dep_Audit",
+      "name": "Dependency Spinner",
+      "regex": "ml_for_basic_logic|unnecessary_pandas|import_bloat",
+      "severity": "LOW",
+      "domain": "ai_output",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "SWE_003",
+      "title": "Dependency Spinner",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "SWE_004",
+      "source": "Hygiene_MD",
+      "name": "Context Ignorer",
+      "regex": "duplicate_systems|isolated_island|bypass_existing_utils",
+      "severity": "MEDIUM",
+      "domain": "ai_output",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "SWE_004",
+      "title": "Context Ignorer",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "SWE_005",
+      "source": "Placeholder_Audit",
+      "name": "Placeholder Prophet",
+      "regex": "TODO|FIXME|NotImplementedError|return\\s+True\\s*#.*placeholder",
+      "severity": "HIGH",
+      "domain": "ai_output",
+      "quality_tier": "low",
+      "precision_estimate": 0.3,
+      "pattern_id": "SWE_005",
+      "title": "Placeholder Prophet",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "# TODO: implement this"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    },
+    {
+      "id": "SWE_006",
+      "source": "Logic_Leak",
+      "name": "Logic Leaker",
+      "regex": "prompt_logic|comment_logic|instruction_as_implementation",
+      "severity": "HIGH",
+      "domain": "ai_output",
+      "quality_tier": "medium",
+      "precision_estimate": 0.5,
+      "pattern_id": "SWE_006",
+      "title": "Logic Leaker",
+      "languages": [
+        "any"
+      ],
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "polarity": "neutral",
+      "maturity": "draft"
+    }
+  ]
+}

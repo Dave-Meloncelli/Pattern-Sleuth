@@ -1,0 +1,830 @@
+{
+  "registry_version": "1.2.0-attack-vector-2026-02-21",
+  "intent": "Patterns derived from offensive security tools (nmap, metasploit, sqlmap, burp, hydra, etc.) for defensive detection. These patterns help identify vulnerable code and detect attack signatures.",
+  "entries": [
+    {
+      "pattern_id": "sec_sqlmap_union_injection",
+      "title": "SQL Injection (UNION-based) - SQLMap detectable",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "Code vulnerable to UNION-based SQL injection as detected by sqlmap. String concatenation in SQL queries allows UNION attacks.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,sql}"
+      ],
+      "sources": {
+        "attack_tool": "sqlmap",
+        "mitre_attack": "T1190",
+        "cwe": "CWE-89"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "\".*\\+.*SELECT.*FROM",
+          "'.*\\+.*SELECT.*FROM",
+          "f\".*{.*}.*SELECT",
+          "f'.*{.*}.*SELECT",
+          "\\.format\\(.*SELECT",
+          "%.*SELECT.*FROM"
+        ],
+        "false_positive_notes": "May trigger on SQL generation in ORM or query builders with proper escaping.",
+        "regex": [
+          "SELECT.*FROM.*[\"\\']\\s*\\+",
+          "[\"\\'].*SELECT.*FROM.*[\"\\'].*\\+",
+          "f[\"\\'].*SELECT.*\\{",
+          "`.*SELECT.*\\$\\{",
+          "\\.format\\(.*SELECT",
+          "%.*SELECT.*FROM"
+        ]
+      },
+      "mitigation": "Use parameterized queries with prepared statements. Never concatenate user input into SQL.",
+      "test_cases": {
+        "true_positives": [
+          "query = \"SELECT * FROM users WHERE id = \" + user_input",
+          "cursor.execute(\"SELECT * FROM products WHERE name LIKE '%\" + name + \"%'\")",
+          "query = f'SELECT * FROM users WHERE id = {user_id}'",
+          "const query = `SELECT * FROM users WHERE id = ${userId}`;",
+          "String query = \"SELECT * FROM users WHERE id = \" + userId;"
+        ],
+        "true_negatives": [
+          "cursor.execute(\"SELECT * FROM users WHERE id = ?\", (user_id,))",
+          "const query = \"SELECT * FROM users WHERE id = $1\";",
+          "# Comment about SELECT"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_sqlmap_boolean_blind",
+      "title": "SQL Injection (Boolean-based blind) - SQLMap detectable",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "Code vulnerable to boolean-based blind SQL injection where attackers can infer data from true/false responses.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php}"
+      ],
+      "sources": {
+        "attack_tool": "sqlmap",
+        "cwe": "CWE-89"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "\".*WHERE.*\".*\\+.*\\w",
+          "'.*WHERE.*'.*\\+.*\\w",
+          "\".*AND.*\".*\\+.*\\w",
+          "'.*AND.*'.*\\+.*\\w",
+          "\".*OR.*\".*\\+.*\\w",
+          "'.*OR.*'.*\\+.*\\w",
+          "f\".*{.*}.*WHERE",
+          "f'.*{.*}.*WHERE",
+          "\\.format\\(.*WHERE"
+        ],
+        "false_positive_notes": "Only flags string concatenation in SQL. F-strings and format() with SQL are flagged.",
+        "regex": [
+          "SELECT.*FROM.*[\"\\']\\s*\\+",
+          "[\"\\'].*SELECT.*[\"\\'].*\\+"
+        ]
+      },
+      "mitigation": "Use parameterized queries. Implement input validation.",
+      "test_cases": {
+        "true_positives": [
+          "query = \"SELECT * FROM users WHERE id = \" + user_input",
+          "cursor.execute(\"SELECT * FROM products WHERE name LIKE '%\" + name + \"%'\")",
+          "query = f'SELECT * FROM users WHERE id = {user_id}'",
+          "String query = \"SELECT * FROM users WHERE id = \" + userId;",
+          "$query = \"SELECT * FROM users WHERE id = \" . $userId;"
+        ],
+        "true_negatives": [
+          "cursor.execute(\"SELECT * FROM users WHERE id = ?\", (user_id,))",
+          "const query = \"SELECT * FROM users WHERE id = $1\";",
+          "// This is a comment about SELECT statements"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_netcat_reverse_shell",
+      "title": "Reverse shell via netcat",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "Reverse shell command patterns using netcat. Common in post-exploitation via metasploit or manual attacks.",
+      "languages": [
+        "python",
+        "shell",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,sh,bash}"
+      ],
+      "sources": {
+        "attack_tool": "netcat, metasploit",
+        "mitre_attack": "T1059"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "nc.*-e.*/bin/",
+          "ncat.*-e.*/bin/",
+          "netcat.*-e.*/bin/",
+          "/bin/sh.*-i",
+          "/bin/bash.*-i",
+          "socket\\.connect\\(",
+          "subprocess.*nc.*-l"
+        ],
+        "false_positive_notes": "Legitimate remote management tools may use similar patterns.",
+        "regex": [
+          "socket\\.connect\\(",
+          "ncat.*-e.*/bin/",
+          "nc.*-e.*/bin/",
+          "/bin/bash.*-i",
+          "subprocess.*nc.*-l",
+          "/bin/sh.*-i",
+          "netcat.*-e.*/bin/"
+        ]
+      },
+      "mitigation": "Use SSH for remote access. Monitor outbound connections. Implement egress filtering.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_hydra_brute_force_vulnerable",
+      "title": "Authentication vulnerable to brute force (Hydra)",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "flag",
+      "domain": "any",
+      "description": "Authentication endpoints without rate limiting, account lockout, or CAPTCHA - vulnerable to Hydra and similar tools.",
+      "languages": [
+        "python",
+        "java",
+        "javascript",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,js,ts}"
+      ],
+      "sources": {
+        "attack_tool": "hydra, medusa",
+        "mitre_attack": "T1110",
+        "cwe": "CWE-307"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "def.*login.*:",
+          "def.*authenticate.*:",
+          "def.*signin.*:",
+          "@app\\.route.*login",
+          "@PostMapping.*login",
+          "router\\.post.*login"
+        ],
+        "false_positive_notes": "Matches authentication endpoints - need manual review for rate limiting.",
+        "regex": [
+          "def.*login.*:",
+          "router\\.post.*login",
+          "def.*signin.*:",
+          "@PostMapping.*login",
+          "@app\\.route.*login",
+          "def.*authenticate.*:"
+        ]
+      },
+      "mitigation": "Implement rate limiting, account lockout after failed attempts, CAPTCHA, and MFA.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_burp_xss_reflected",
+      "title": "Reflected XSS vulnerability - Burp detectable",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "Code that reflects user input without sanitization, detectable by Burp Suite XSS scanner.",
+      "languages": [
+        "python",
+        "java",
+        "javascript",
+        "php",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,js,ts,php}"
+      ],
+      "sources": {
+        "attack_tool": "burp_suite, owasp_zap",
+        "mitre_attack": "T1189",
+        "cwe": "CWE-79"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "return.*request\\.(get|post|args)\\[",
+          "response\\.write.*request\\.",
+          "innerHTML.*=.*request\\.",
+          "document\\.write.*request\\.",
+          "eval\\(.*request\\."
+        ],
+        "false_positive_notes": "Check if output encoding/sanitization is applied before reflection.",
+        "regex": [
+          "eval\\(.*request\\.",
+          "innerHTML.*=.*request\\.",
+          "document\\.write.*request\\.",
+          "return.*request\\.(get|post|args)\\[",
+          "response\\.write.*request\\."
+        ]
+      },
+      "mitigation": "Use output encoding (HTML entity encoding), Content Security Policy, input validation.",
+      "test_cases": {
+        "true_positives": [
+          "element.innerHTML = userInput;",
+          "document.write(userInput);",
+          "res.send(\"<div>\" + userInput + \"</div>\");"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_metasploit_command_injection",
+      "title": "Command injection - Metasploit exploitable",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "OS command injection vulnerabilities exploitable via Metasploit payloads. User input passed to system commands.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "ruby",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,rb}"
+      ],
+      "sources": {
+        "attack_tool": "metasploit",
+        "mitre_attack": "T1199",
+        "cwe": "CWE-78"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "os\\.system\\(.*\\+",
+          "subprocess\\.call\\(.*shell=True",
+          "subprocess\\.Popen\\(.*shell=True",
+          "Runtime\\.getRuntime\\(\\)\\.exec\\(",
+          "exec\\(.*\\$",
+          "shell_exec\\(",
+          "system\\(.*\\$",
+          "passthru\\(",
+          "popen\\("
+        ],
+        "false_positive_notes": "Some legitimate use cases exist - review context carefully.",
+        "regex": [
+          "os\\.system\\s*\\([^)]*\\+",
+          "subprocess\\.(call|Popen|run).*\\+",
+          "exec\\s*\\([\"\\'][^\"\\']*\\+",
+          "\\.\\s*system\\s*\\([^)]*\\+"
+        ]
+      },
+      "mitigation": "Use subprocess without shell=True. Use allowlists for commands. Sanitize all input.",
+      "test_cases": {
+        "true_positives": [
+          "os.system(\"ls \" + user_input)",
+          "subprocess.call(\"ping \" + host, shell=True)",
+          "exec(\"cat \" + filename)"
+        ],
+        "true_negatives": [
+          "subprocess.run([\"ping\", \"-c\", \"1\", host])",
+          "# shell injection warning",
+          "def system_call(args): pass"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_john_weak_hash",
+      "title": "Weak password hashing - John the Ripper / Hashcat vulnerable",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "Weak or unsalted password hashes vulnerable to cracking with John the Ripper, Hashcat, or similar tools.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "ruby",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,rb}"
+      ],
+      "sources": {
+        "attack_tool": "john_the_ripper, hashcat",
+        "cwe": "CWE-328"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "hashlib\\.md5\\(",
+          "hashlib\\.sha1\\(",
+          "MD5\\.digest",
+          "SHA1\\.digest",
+          "password.*=.*hash\\(",
+          "crypt\\(.*password"
+        ],
+        "false_positive_notes": "MD5/SHA1 may be used for non-security purposes (checksums, identifiers).",
+        "regex": [
+          "password.*=.*hash\\(",
+          "hashlib\\.md5\\(",
+          "SHA1\\.digest",
+          "crypt\\(.*password",
+          "MD5\\.digest",
+          "hashlib\\.sha1\\("
+        ]
+      },
+      "mitigation": "Use bcrypt, scrypt, argon2, or PBKDF2 with appropriate work factors.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_nikto_info_disclosure",
+      "title": "Information disclosure - Nikto detectable",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "warn",
+      "domain": "any",
+      "description": "Code that exposes version numbers, stack traces, or sensitive configuration - detected by Nikto.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "javascript",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,js,ts}"
+      ],
+      "sources": {
+        "attack_tool": "nikto, owasp_zap",
+        "cwe": "CWE-200"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "print.*traceback",
+          "console\\.log.*error",
+          "response\\.write.*exception",
+          "e\\.printStackTrace\\(\\)",
+          "debug.*=.*true",
+          "expose.*=.*true"
+        ],
+        "false_positive_notes": "Development/debug code often has these - ensure disabled in production.",
+        "regex": [
+          "response\\.write.*exception",
+          "debug.*=.*true",
+          "console\\.log.*error",
+          "print.*traceback",
+          "e\\.printStackTrace\\(\\)",
+          "expose.*=.*true"
+        ]
+      },
+      "mitigation": "Disable debug mode in production. Use custom error pages. Log errors server-side only.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_nmap_service_exposure",
+      "title": "Unnecessary service/port exposure - Nmap detectable",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "warn",
+      "domain": "any",
+      "description": "Configuration exposing unnecessary services or ports detectable by Nmap scans.",
+      "languages": [
+        "yaml",
+        "json",
+        "shell"
+      ],
+      "file_globs": [
+        "**/*.{yml,yaml,json,sh,dockerfile,dockerfile.*}"
+      ],
+      "sources": {
+        "attack_tool": "nmap",
+        "mitre_attack": "T1046"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "EXPOSE.*0\\.0\\.0\\.0",
+          "0\\.0\\.0\\.0:.*:",
+          "listen.*0\\.0\\.0\\.0",
+          "bind.*0\\.0\\.0\\.0",
+          "\\*\\:.*listen"
+        ],
+        "false_positive_notes": "Some services legitimately need to bind to all interfaces.",
+        "regex": [
+          "bind.*0\\.0\\.0\\.0",
+          "EXPOSE.*0\\.0\\.0\\.0",
+          "0\\.0\\.0\\.0:.*:",
+          "\\*\\:.*listen",
+          "listen.*0\\.0\\.0\\.0"
+        ]
+      },
+      "mitigation": "Bind to specific interfaces. Use firewall rules. Follow principle of least exposure.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_enum4linux_smb_exposure",
+      "title": "SMB/Windows share exposure - enum4linux detectable",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "flag",
+      "domain": "any",
+      "description": "SMB configuration vulnerable to enumeration via enum4linux or similar tools.",
+      "languages": [
+        "shell",
+        "yaml",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{conf,cfg,yml,yaml,smb.conf}"
+      ],
+      "sources": {
+        "attack_tool": "enum4linux, smbclient",
+        "mitre_attack": "T1135"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "guest ok = yes",
+          "browseable = yes",
+          "read only = no",
+          "public = yes",
+          "anonymous.*enable"
+        ],
+        "false_positive_notes": "Public shares may be intentional.",
+        "regex": [
+          "anonymous.*enable"
+        ]
+      },
+      "mitigation": "Disable guest access. Require authentication. Limit share visibility.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_path_traversal_burp",
+      "title": "Path traversal vulnerability - Burp/ZAP detectable",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "File path operations vulnerable to directory traversal attacks detected by Burp Suite and OWASP ZAP.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "ruby",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,rb}"
+      ],
+      "sources": {
+        "attack_tool": "burp_suite, owasp_zap",
+        "mitre_attack": "T1083",
+        "cwe": "CWE-22"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "open\\(.*request\\.(get|post|args|params)",
+          "open\\(.*\\+.*request",
+          "file_get_contents\\(.*\\$_(GET|POST|REQUEST)",
+          "new File\\(.*request\\.(get|getParameter)",
+          "send_file\\(.*request\\.(args|params|query)",
+          "readFile\\(.*req\\.(query|body|params)",
+          "fs\\.readFile\\(.*req\\."
+        ],
+        "false_positive_notes": "Only flags user input in file paths. Relative paths like '../src' in configs are NOT flagged.",
+        "regex": [
+          "fs\\.readFile\\(.*req\\.",
+          "open\\(.*request\\.(get|post|args|params)",
+          "new File\\(.*request\\.(get|getParameter)",
+          "send_file\\(.*request\\.(args|params|query)",
+          "file_get_contents\\(.*\\$_(GET|POST|REQUEST)",
+          "readFile\\(.*req\\.(query|body|params)",
+          "open\\(.*\\+.*request"
+        ]
+      },
+      "mitigation": "Validate and sanitize file paths. Use allowlists. Avoid user input in file paths.",
+      "test_cases": {
+        "true_positives": [
+          "open(\"/uploads/\" + filename)",
+          "file = open(user_path, \"r\")",
+          "Path(f'/data/{user_input}')"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_ssrf_metasploit",
+      "title": "Server-Side Request Forgery (SSRF)",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "Server-side request forgery allowing attackers to make requests from the server, exploitable via Metasploit.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "ruby",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,rb}"
+      ],
+      "sources": {
+        "attack_tool": "metasploit, burp_suite",
+        "mitre_attack": "T1071",
+        "cwe": "CWE-918"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "requests\\.get\\(.*request\\.",
+          "urllib\\.request\\(.*\\$",
+          "curl_exec\\(",
+          "http\\.get\\(.*\\+",
+          "URL\\(.*request\\.",
+          "fetch\\(.*request\\."
+        ],
+        "false_positive_notes": "Some APIs legitimately accept URLs as input - validate carefully.",
+        "regex": [
+          "fetch\\(.*request\\.",
+          "URL\\(.*request\\.",
+          "curl_exec\\(",
+          "http\\.get\\(.*\\+",
+          "requests\\.get\\(.*request\\.",
+          "urllib\\.request\\(.*\\$"
+        ]
+      },
+      "mitigation": "Allowlist permitted domains/URLs. Block internal IP ranges. Use network segmentation.",
+      "test_cases": {
+        "true_positives": [
+          "requests.get(user_url)",
+          "fetch(userProvidedUrl)",
+          "urllib.request.urlopen(url)"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_deserialization_exploit",
+      "title": "Insecure deserialization - Metasploit exploitable",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "Insecure deserialization allowing remote code execution, commonly exploited via Metasploit.",
+      "languages": [
+        "python",
+        "java",
+        "php",
+        "ruby",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,java,php,rb}"
+      ],
+      "sources": {
+        "attack_tool": "metasploit, ysoserial",
+        "mitre_attack": "T1199",
+        "cwe": "CWE-502"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "pickle\\.loads\\(",
+          "yaml\\.load\\(.*Loader=None",
+          "yaml\\.unsafe_load\\(",
+          "ObjectInputStream",
+          "unserialize\\(.*\\$",
+          "Marshal\\.load\\(",
+          "eval\\(.*decode"
+        ],
+        "false_positive_notes": "Some legitimate use cases exist - ensure input is trusted.",
+        "regex": [
+          "Marshal\\.load\\(",
+          "eval\\(.*decode",
+          "yaml\\.unsafe_load\\(",
+          "unserialize\\(.*\\$",
+          "pickle\\.loads\\(",
+          "yaml\\.load\\(.*Loader=None"
+        ]
+      },
+      "mitigation": "Use safe deserialization methods. Validate and sanitize input. Avoid deserializing untrusted data.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_log4shell_pattern",
+      "title": "Log4Shell / JNDI injection pattern",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "block",
+      "domain": "any",
+      "description": "Log4j Log4Shell vulnerability pattern (CVE-2021-44228) allowing remote code execution via JNDI.",
+      "languages": [
+        "java",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.java"
+      ],
+      "sources": {
+        "attack_tool": "metasploit, various",
+        "cve": "CVE-2021-44228",
+        "cwe": "CWE-917"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "\\$\\{jndi:",
+          "\\$\\{\\$\\{",
+          "log4j.*<2.15",
+          "import.*log4j"
+        ],
+        "false_positive_notes": "Log4j usage alone is not a vulnerability - check version and configuration.",
+        "regex": [
+          "\\$\\{\\$\\{",
+          "\\$\\{jndi:",
+          "import.*log4j",
+          "log4j.*<2.15"
+        ]
+      },
+      "mitigation": "Update Log4j to 2.17.1+. Disable JNDI lookup. Set formatMsgNoLookups=true.",
+      "test_cases": {
+        "true_positives": [
+          "placeholder_test_case"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    },
+    {
+      "pattern_id": "sec_missing_rate_limit",
+      "title": "Missing rate limiting (brute force vulnerable)",
+      "polarity": "negative",
+      "category": "security",
+      "severity": "warn",
+      "domain": "any",
+      "description": "API endpoints without rate limiting, vulnerable to brute force attacks with Hydra, ffuf, or similar.",
+      "languages": [
+        "python",
+        "javascript",
+        "java",
+        "any"
+      ],
+      "file_globs": [
+        "**/*.{py,js,ts,java}"
+      ],
+      "sources": {
+        "attack_tool": "hydra, ffuf, wfuzz",
+        "cwe": "CWE-770"
+      },
+      "detection": {
+        "strategy": "regex",
+        "signals": [
+          "@app\\.route.*methods=\\[.*POST",
+          "@api_view\\(\\[.*POST",
+          "router\\.(post|put|delete)\\(",
+          "@PostMapping",
+          "@PutMapping"
+        ],
+        "false_positive_notes": "Rate limiting may be implemented at infrastructure level (nginx, API gateway).",
+        "regex": [
+          "@api_view\\(\\[.*POST",
+          "@app\\.route.*methods=\\[.*POST",
+          "router\\.(post|put|delete)\\("
+        ]
+      },
+      "mitigation": "Implement rate limiting per IP/user. Use token bucket or sliding window algorithms.",
+      "test_cases": {
+        "true_positives": [
+          "@app.route(\"/api/login\", methods=[\"POST\"])",
+          "app.post(\"/api/login\", handler);"
+        ],
+        "true_negatives": [
+          "# This is a normal comment",
+          "def normal_function(): return 42",
+          "const value = compute();"
+        ]
+      },
+      "maturity": "draft"
+    }
+  ]
+}
