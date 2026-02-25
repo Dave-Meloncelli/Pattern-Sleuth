@@ -260,6 +260,25 @@ Pattern Sleuth uses a **filetype sluice** to route patterns intelligently:
 
 This prevents false positives from AI patterns matching words like "understand" in your Python code.
 
+## Development
+
+```bash
+# Clone and install in editable mode with dev deps
+git clone https://github.com/Dave-Meloncelli/Pattern-Sleuth.git
+cd Pattern-Sleuth
+python -m venv .venv
+.venv\Scripts\activate   # Windows
+# source .venv/bin/activate  # macOS/Linux
+pip install -e ".[dev]"
+
+# Run tests
+pytest tests/ -v
+
+# Generate test cases and run pattern test harness
+python -m pattern_sleuth.challenge_generator --output all_test_cases.json
+pattern-sleuth test --test-cases all_test_cases.json --json
+```
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
@@ -279,3 +298,4 @@ Contributions welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before sub
 - Zero external dependencies
 - Custom registry support
 - CI/CD integration
+- Test harness accepts challenge_generator output (`pattern_id`, `language`, `file_extension` on test cases)
