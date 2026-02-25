@@ -279,6 +279,17 @@ python -m pattern_sleuth.challenge_generator --output all_test_cases.json
 pattern-sleuth test --test-cases all_test_cases.json --json
 ```
 
+### Post-pull checks (same as CI)
+
+After `git pull`, run the same checks that run on GitHub:
+
+```bash
+pip install -e ".[dev]"
+python scripts/run_ci_checks.py
+```
+
+This runs: syntax check (all `pattern_sleuth/**/*.py`), `pytest tests/`, `pattern-sleuth validate`, and `pattern-sleuth scan pattern_sleuth --json`. If any step fails, fix before pushing.
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
