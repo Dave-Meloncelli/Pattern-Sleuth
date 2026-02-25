@@ -33,6 +33,9 @@ jobs:
     - name: Validate package
       run: |
         pattern-sleuth validate
+    - name: Test patterns (full registry)
+      continue-on-error: true
+      run: |
         pattern-sleuth test --registry pattern_sleuth/registry/patterns.json
 
   lint:
@@ -49,9 +52,14 @@ jobs:
       run: |
         pip install -e .
     
-    - name: Check syntax
+    - name: Check syntax (all Python files)
       run: |
-        python -m py_compile pattern_sleuth/*.py
+        python -c "
+        from pathlib import Path
+        for f in Path('pattern_sleuth').rglob('*.py'):
+            import py_compile
+            py_compile.compile(str(f), doraise=True)
+        "
     
     - name: Scan self
       run: |

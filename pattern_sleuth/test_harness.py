@@ -107,7 +107,7 @@ PATTERN_SCHEMA = {
 }
 
 DETECTION_SCHEMA = {
-    "strategy": {"type": str, "required": True, "allowed": ["regex", "heuristic", "ast", "external"]},
+    "strategy": {"type": str, "required": True, "allowed": ["regex", "heuristic", "ast", "external", "manual"]},
     "signals": {"type": list, "required": True},
 }
 
