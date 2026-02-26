@@ -27,8 +27,8 @@ def main():
     run("Syntax (py_compile)", [sys.executable, str(ROOT / "scripts" / "check_syntax.py")])
     run("Unit tests", [sys.executable, "-m", "pytest", "tests/", "-v", "--tb=short"])
     run("Validate package", [sys.executable, "-m", "pattern_sleuth.cli", "validate"])
-    # Scan self: may BLOCK due to intentional test strings in DEFAULT_TEST_CASES; do not fail build
-    run("Scan self", [sys.executable, "-m", "pattern_sleuth.cli", "scan", "pattern_sleuth", "--json"], allow_fail=True)
+    # Scan self: repo must pass (test_harness.py excluded so test-case literals don't trigger)
+    run("Scan self", [sys.executable, "-m", "pattern_sleuth.cli", "scan", "pattern_sleuth", "--json"])
     print("\nAll post-pull checks passed.")
 
 if __name__ == "__main__":

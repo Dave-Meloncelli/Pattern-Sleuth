@@ -55,8 +55,7 @@ jobs:
     - name: Check syntax (all Python files)
       run: python scripts/check_syntax.py
     
-    - name: Scan self (informational; may BLOCK on test data in repo)
-      continue-on-error: true
+    - name: Scan self (repo must pass its own scan)
       run: |
         pattern-sleuth scan pattern_sleuth --json > scan-results.json
         cat scan-results.json

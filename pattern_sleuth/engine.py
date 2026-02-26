@@ -415,6 +415,11 @@ class PatternScanner:
             'test_cases.json',
             'sovereign_patterns.json',
             'delegated_patterns.json',
+            # Test-case literals that would trigger patterns
+            'test_harness.py',
+            # Pattern definitions and route config: content self-matches (signals, enum names)
+            'engine.py',
+            'sluice.py',
         }
         
         all_findings = []
